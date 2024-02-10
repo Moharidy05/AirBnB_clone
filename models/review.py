@@ -1,15 +1,10 @@
 #!/usr/bin/python3
-"""Review class
-"""
-
-import uuid
-from datetime import datetime
-from models import storage
+""" Review module for the HBNB project """
 from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """ Review class """
+    """ Review classto store review information """
     place_id = ""
     user_id = ""
     text = ""

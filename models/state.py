@@ -1,9 +1,5 @@
 #!/usr/bin/python3
-""" State class """
-
-import uuid
-from datetime import datetime
-from models import storage
+""" State Module for HBNB project """
 from models.base_model import BaseModel
 
 

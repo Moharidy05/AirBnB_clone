@@ -1,13 +1,9 @@
 #!/usr/bin/python3
-""" City class """
-
-import uuid
-from datetime import datetime
-from models import storage
+""" City Module for HBNB project """
 from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    """ City class """
+    """ The city class, contains state ID and name """
     state_id = ""
     name = ""
