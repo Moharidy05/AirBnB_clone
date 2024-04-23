@@ -1,82 +1,92 @@
 #!/usr/bin/python3
-"""Unit tests for the `city` module.
-"""
-import os
-import unittest
-from models.engine.file_storage import FileStorage
+""" """
+from tests.test_models.test_base_model import test_basemodel
 from models.place import Place
-from models import storage
-from datetime import datetime
+import os
 
 
-class TestPlace(unittest.TestCase):
-    """Test cases for the `Place` class."""
+class test_Place(test_basemodel):
+    """ place tests class"""
 
-    def setUp(self):
-        pass
+    def __init__(self, *args, **kwargs):
+        """ init test class"""
+        super().__init__(*args, **kwargs)
+        self.name = "Place"
+        self.value = Place
 
-    def tearDown(self) -> None:
-        """Resets FileStorage data."""
-        FileStorage._FileStorage__objects = {}
-        if os.path.exists(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
+    def test_city_id(self):
+        """ testing place city_id attr"""
+        new = self.value()
+        self.assertEqual(type(new.city_id), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_params(self):
-        """Test method for class attributes"""
+    def test_user_id(self):
+        """ testing place user_id attr"""
+        new = self.value()
+        self.assertEqual(type(new.user_id), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-        p1 = Place()
-        p3 = Place("hello", "wait", "in")
-        k = f"{type(p1).__name__}.{p1.id}"
-        self.assertIsInstance(p1.name, str)
-        self.assertIn(k, storage.all())
-        self.assertEqual(p3.name, "")
+    def test_name(self):
+        """ testing place name attr"""
+        new = self.value()
+        self.assertEqual(type(new.name), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-        self.assertIsInstance(p1.name, str)
-        self.assertIsInstance(p1.user_id, str)
-        self.assertIsInstance(p1.city_id, str)
-        self.assertIsInstance(p1.description, str)
-        self.assertIsInstance(p1.number_bathrooms, int)
-        self.assertIsInstance(p1.number_rooms, int)
-        self.assertIsInstance(p1.price_by_night, int)
-        self.assertIsInstance(p1.max_guest, int)
-        self.assertIsInstance(p1.longitude, float)
-        self.assertIsInstance(p1.latitude, float)
-        self.assertIsInstance(p1.amenity_ids, list)
+    def test_description(self):
+        """testing place description attr"""
+        new = self.value()
+        self.assertEqual(type(new.description), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_init(self):
-        """Test method for public instances"""
+    def test_number_rooms(self):
+        """ testing place number of rooms attr"""
+        new = self.value()
+        self.assertEqual(type(new.number_rooms), int if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-        p1 = Place()
-        p2 = Place(**p1.to_dict())
-        self.assertIsInstance(p1.id, str)
-        self.assertIsInstance(p1.created_at, datetime)
-        self.assertIsInstance(p1.updated_at, datetime)
-        self.assertEqual(p1.updated_at, p2.updated_at)
+    def test_number_bathrooms(self):
+        """ testing place number of bathrooms attr"""
+        new = self.value()
+        self.assertEqual(type(new.number_bathrooms), int if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_str(self):
-        """Test method for str representation"""
-        p1 = Place()
-        string = f"[{type(p1).__name__}] ({p1.id}) {p1.__dict__}"
-        self.assertEqual(p1.__str__(), string)
+    def test_max_guest(self):
+        """ testing place max_guest attr"""
+        new = self.value()
+        self.assertEqual(type(new.max_guest), int if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_save(self):
-        """Test method for save"""
-        p1 = Place()
-        old_update = p1.updated_at
-        p1.save()
-        self.assertNotEqual(p1.updated_at, old_update)
+    def test_price_by_night(self):
+        """ testing place price by night attr"""
+        new = self.value()
+        self.assertEqual(type(new.price_by_night), int if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_todict(self):
-        """Test method for dict"""
-        p1 = Place()
-        p2 = Place(**p1.to_dict())
-        a_dict = p2.to_dict()
-        self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(p2).__name__)
-        self.assertIn('created_at', a_dict.keys())
-        self.assertIn('updated_at', a_dict.keys())
-        self.assertNotEqual(p1, p2)
+    def test_latitude(self):
+        """ testing place latitud attr"""
+        new = self.value()
+        self.assertEqual(type(new.latitude), float if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
+    def test_longitude(self):
+        """ testing place longitude attr"""
+        new = self.value()
+        self.assertEqual(type(new.latitude), float if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_amenity_ids(self):
+        """ testing amenity ids"""
+        new = self.value()
+        self.assertEqual(type(new.amenity_ids), list if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))

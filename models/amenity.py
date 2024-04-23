@@ -1,17 +1,14 @@
 #!/usr/bin/python3
-"""The `amenity` module
-
-It defines one class, `Amenity(),
-which sub-classes the `BaseModel()` class.`
-"""
-from models.base_model import BaseModel
+""" State Module for HBNB project """
+from models.base_model import BaseModel, Base
+from models import storage_type
+from sqlalchemy import Column, String
 
 
-class Amenity(BaseModel):
-    """An amenity provided by a place/house.
-
-    Attributes:
-        name
-    """
-
-    name = ""
+class Amenity(BaseModel, Base):
+    '''amenity class'''
+    __tablename__ = 'amenities'
+    if storage_type == 'db':
+        name = Column(String(128), nullable=False)
+    else:
+        name = ""

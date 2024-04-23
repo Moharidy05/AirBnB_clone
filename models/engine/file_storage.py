@@ -1,73 +1,73 @@
 #!/usr/bin/python3
-"""
-Module: file_storage.py
-
-Defines a `FileStorage` class.
-"""
-import os
+"""This module defines a class to manage file storage for hbnb clone"""
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.review import Review
-from models.amenity import Amenity
-from models.place import Place
 
 
-class FileStorage():
-    """
-    serializes instances to a JSON file and
-    deserializes JSON file to instances
-    """
-
-    __file_path = "file.json"
+class FileStorage:
+    """This class manages storage of hbnb models in JSON format"""
+    __file_path = 'file.json'
     __objects = {}
 
-    def all(self):
-        """
-        returns the dictionary __objects
-        """
-        return FileStorage.__objects
+    def all(self, cls=None):
+        """Returns a dictionary of models currently in storage"""
+        if cls is None:
+            return self.__objects
+        cls_name = cls.__name__
+        dct = {}
+        for key in self.__objects.keys():
+            if key.split('.')[0] == cls_name:
+                dct[key] = self.__objects[key]
+        return dct
 
     def new(self, obj):
-        """
-        sets in __objects the obj with key <obj class name>.id
-        """
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        """Adds new object to storage dictionary"""
+        self.__objects.update(
+            {obj.to_dict()['__class__'] + '.' + obj.id: obj}
+            )
 
     def save(self):
-        """
-        serializes __objects to the JSON file (path: __file_path)
-        """
-        with open(FileStorage.__file_path, 'w') as f:
-            json.dump(
-                {k: v.to_dict() for k, v in FileStorage.__objects.items()}, f)
+        """Saves storage dictionary to file"""
+        with open(self.__file_path, 'w') as f:
+            temp = {}
+            temp.update(self.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)
 
     def reload(self):
-        """
-        deserializes the JSON file to __objects only if the JSON
-        file exists; otherwise, does nothing
-        """
-        current_classes = {'BaseModel': BaseModel, 'User': User,
-                           'Amenity': Amenity, 'City': City, 'State': State,
-                           'Place': Place, 'Review': Review}
+        """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
 
-        if not os.path.exists(FileStorage.__file_path):
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
+        try:
+            temp = {}
+            with open(self.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
+
+    def delete(self, obj=None):
+        ''' deletes the object obj from the attribute
+            __objects if it's inside it
+        '''
+        if obj is None:
             return
+        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
+        if obj_key in self.__objects.keys():
+            del self.__objects[obj_key]
 
-        with open(FileStorage.__file_path, 'r') as f:
-            deserialized = None
-
-            try:
-                deserialized = json.load(f)
-            except json.JSONDecodeError:
-                pass
-
-            if deserialized is None:
-                return
-
-            FileStorage.__objects = {
-                k: current_classes[k.split('.')[0]](**v)
-                for k, v in deserialized.items()}
+    def close(self):
+        """Call the reload method"""
+        self.reload()

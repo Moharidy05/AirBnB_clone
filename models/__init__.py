@@ -1,8 +1,15 @@
 #!/usr/bin/python3
-"""
-Module: __init__.py
-"""
-from models.engine import file_storage
+"""This module instantiates an instance of the Storage will be used"""
 
-storage = file_storage.FileStorage()
+from os import getenv
+
+storage_type = getenv('HBNB_TYPE_STORAGE')
+
+if storage_type == 'db':
+    from models.engine.db_storage import DBStorage
+    storage = DBStorage()
+else:
+    from models.engine.file_storage import FileStorage
+    storage = FileStorage()
+
 storage.reload()
